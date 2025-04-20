@@ -1,16 +1,20 @@
-# py-mcp-tour
+> MCP integration for Korea Tourism Organization’s API using Claude Desktop App with help from Cursor.
 
-Korea Tourism Organization API integration for Claude using MCP protocol.
+![image](https://github.com/user-attachments/assets/78a12e75-f1bc-4e8f-bd23-c2b699b1357f)
 
 ## Description
 
-This MCP server provides access to Korea Tourism Organization's tourism data API, specifically focusing on related tourist spots information.
+This MCP server integrates the Korea Tourism Organization’s public data API to provide related tourist spots information. It is designed to be used with Claude Desktop via the Model Context Protocol (MCP).
 
 ## Features
 
-- Get related tourist spots information
-- Get detailed spot information
-- Support for different content types (tourist spots, food, accommodation)
+- Retrieve related tourist spot recommendations
+- Get detailed tourist spot information
+- Support for multiple content types: tourist attractions, food, and accommodation
+
+## Data Source
+
+We use the [Korea Tourism Organization API](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15128560), which provides up to 50 highly connected related tourist destinations by region and type (tourist spots, food, accommodation).
 
 ## Setup
 
@@ -47,40 +51,30 @@ python -m mcp_tour.hosts.claude_desktop \
 
 ## Usage
 
-The server provides the following tools:
-
 ### get_related_spots
 
-Get related tourist spots information:
+Fetch related tourist spots:
 
-Parameters:
-- spot_id: Tourist spot ID
-- content_type: Type of content (all/tourist/food/accommodation)
-- size: Number of results (max 50)
+**Parameters**
+- `spot_id`: Tourist spot ID
+- `content_type`: one of `all`, `tourist`, `food`, or `accommodation`
+- `size`: Number of results (up to 50)
 
 ### get_spot_info
 
-Get detailed information about a tourist spot:
+Fetch detailed information about a tourist spot:
 
-Parameters:
-- spot_id: Tourist spot ID
+**Parameters**
+- `spot_id`: Tourist spot ID
 
-## Development
+## Acknowledgments
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   uv pip install -e ".[dev]"
-   ```
-   or using pip:
-   ```bash
-   pip install -e ".[dev]"
-   ```
-3. Run tests:
-   ```bash
-   python -m pytest
-   ```
+This project was inspired and supported by:
 
-## License
+- [pfldy2850/py-mcp-naver](https://github.com/pfldy2850/py-mcp-naver)
+- [jlowin/fastmcp](https://github.com/jlowin/fastmcp)
+- [DYTIS Tistory Blog](https://dytis.tistory.com/113)
+- [Cursor](https://www.cursor.com/) – used as the main development environment for integrating the Claude Desktop Plugin
+```
 
-This project is licensed under the terms of the MIT license.
+필요한 경우, 상단의 `![placeholder-image](image-url-here)` 자리에 실제 이미지를 삽입하면 됩니다. 수정이나 추가 포맷이 더 필요하면 알려줘!

@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mcp-tour"
-version = "0.1.2"
+version = "0.1.8"
 description = "MCP server providing Korea Tourism Organization APIs"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -13,6 +13,7 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.10.6",
     "python-dotenv>=1.0.0",
+    "certifi>=2024.2.2"
 ]
 authors = [{ name = "tjwodud04", email = "tjwodud04@gmail.com" }]
 
@@ -20,7 +21,8 @@ authors = [{ name = "tjwodud04", email = "tjwodud04@gmail.com" }]
 Repository = "https://github.com/tjwodud04/mcp-tour.git"
 
 [project.scripts]
-mcp-tour = "mcp_tour.server:mcp"
+mcp-tour-claude = "mcp_tour.hosts.claude_desktop:install_to_claude_desktop"
+mcp-tour-cursor = "mcp_tour.hosts.cursor:install_to_cursor"
 
 [tool.hatch.build.targets.wheel]
 packages = ["mcp_tour"]

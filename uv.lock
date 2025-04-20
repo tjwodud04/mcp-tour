@@ -430,9 +430,10 @@ wheels = [
 
 [[package]]
 name = "mcp-tour"
-version = "0.1.1"
+version = "0.1.8"
 source = { editable = "." }
 dependencies = [
+    { name = "certifi" },
     { name = "fastmcp" },
     { name = "httpx" },
     { name = "pydantic" },
@@ -448,6 +449,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "certifi", specifier = ">=2024.2.2" },
     { name = "fastmcp", specifier = ">=0.4.1" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "pydantic", specifier = ">=2.10.6" },

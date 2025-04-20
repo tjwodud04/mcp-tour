@@ -1,3 +1,7 @@
+"""
+Cursor integration module for Korea Tourism API.
+"""
+
 import json
 import sys
 from pathlib import Path
@@ -54,7 +58,7 @@ def update_cursor_config(
     args = ["run"]
 
     # Collect all packages in a set to deduplicate
-    packages = {"fastmcp", "mcp-naver"}
+    packages = {"fastmcp", "mcp-tour"}
     if with_packages:
         packages.update(pkg for pkg in with_packages if pkg)
 
@@ -66,7 +70,7 @@ def update_cursor_config(
         args.extend(["--with-editable", str(with_editable)])
 
     # Add fastmcp run command
-    args.extend(["python", "-m", "mcp_naver.server"])
+    args.extend(["python", "-m", "mcp_tour.server"])
 
     server_config = {
         "command": "uv",
@@ -77,12 +81,12 @@ def update_cursor_config(
     if env_vars:
         server_config["env"] = env_vars
 
-    assert "NAVER_CLIENT_ID" in env_vars, "Missing NAVER_CLIENT_ID in env_vars"
-    assert "NAVER_CLIENT_SECRET" in env_vars, "Missing NAVER_CLIENT_SECRET in env_vars"
+    assert "TOUR_API_KEY" in env_vars, "Missing TOUR_API_KEY in env_vars"
 
     config["mcpServers"][server_name] = server_config
 
     config_file.write_text(json.dumps(config, indent=2))
+    return True
 
 
 def install_to_cursor(
@@ -94,7 +98,7 @@ def install_to_cursor(
     if not get_cursor_mcp_config_path():
         sys.exit(1)
 
-    from mcp_naver.server import mcp
+    from mcp_tour.server import mcp
 
     name = mcp.name
     server = mcp

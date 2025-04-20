@@ -1,3 +1,7 @@
+"""
+Claude Desktop integration module for Korea Tourism API.
+"""
+
 import json
 import sys
 from pathlib import Path
@@ -86,6 +90,7 @@ def update_claude_config(
     config["mcpServers"][server_name] = server_config
 
     config_file.write_text(json.dumps(config, indent=2))
+    return True
 
 
 def install_to_claude_desktop(
