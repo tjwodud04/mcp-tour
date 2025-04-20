@@ -1,12 +1,19 @@
 # server.py
 import os
+from dotenv import load_dotenv
 import json
 import httpx
 from fastmcp import FastMCP
 
+# Load environment variables from .env file
+load_dotenv()
+
 mcp = FastMCP("Korea Tourism API", dependencies=["httpx"])
 
 TOUR_API_KEY = os.environ.get("TOUR_API_KEY")
+if not TOUR_API_KEY:
+    raise ValueError("TOUR_API_KEY environment variable is not set")
+    
 API_ENDPOINT = "https://apis.data.go.kr/B551011/DataLabAiTour"
 
 @mcp.tool(
@@ -66,3 +73,7 @@ async def get_spot_info(
         
         response.raise_for_status()
         return response.text
+
+if __name__ == "__main__":
+    mcp.run()
+

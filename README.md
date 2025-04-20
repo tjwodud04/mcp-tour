@@ -15,15 +15,34 @@ This MCP server provides access to Korea Tourism Organization's tourism data API
 ## Setup
 
 1. Get an API key from [Data.go.kr](https://www.data.go.kr)
-2. Set environment variable:
-   ```bash
-   export TOUR_API_KEY="your-api-key"
+2. Set environment variable in `.env` file:
+   ```
+   TOUR_API_KEY=your-api-key
    ```
 
 ## Installation
 
+### Regular Installation
 ```bash
 pip install mcp-tour
+```
+
+### Claude Desktop Installation
+
+Using uv (recommended):
+```bash
+uv pip install mcp-tour
+
+uv run python -m mcp_tour.hosts.claude_desktop \
+  -e TOUR_API_KEY=your-api-key
+```
+
+Using pip:
+```bash
+pip install mcp-tour
+
+python -m mcp_tour.hosts.claude_desktop \
+  -e TOUR_API_KEY=your-api-key
 ```
 
 ## Usage
@@ -50,6 +69,10 @@ Parameters:
 
 1. Clone the repository
 2. Install dependencies:
+   ```bash
+   uv pip install -e ".[dev]"
+   ```
+   or using pip:
    ```bash
    pip install -e ".[dev]"
    ```

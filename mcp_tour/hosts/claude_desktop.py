@@ -58,7 +58,7 @@ def update_claude_config(
     args = ["run"]
 
     # Collect all packages in a set to deduplicate
-    packages = {"fastmcp", "mcp-naver"}
+    packages = {"fastmcp", "mcp-tour"}
     if with_packages:
         packages.update(pkg for pkg in with_packages if pkg)
 
@@ -70,7 +70,7 @@ def update_claude_config(
         args.extend(["--with-editable", str(with_editable)])
 
     # Add fastmcp run command
-    args.extend(["python", "-m", "mcp_naver.server"])
+    args.extend(["python", "-m", "mcp_tour.server"])
 
     server_config = {
         "command": "uv",
@@ -81,8 +81,7 @@ def update_claude_config(
     if env_vars:
         server_config["env"] = env_vars
 
-    assert "NAVER_CLIENT_ID" in env_vars, "Missing NAVER_CLIENT_ID in env_vars"
-    assert "NAVER_CLIENT_SECRET" in env_vars, "Missing NAVER_CLIENT_SECRET in env_vars"
+    assert "TOUR_API_KEY" in env_vars, "Missing TOUR_API_KEY in env_vars"
 
     config["mcpServers"][server_name] = server_config
 
@@ -98,7 +97,7 @@ def install_to_claude_desktop(
     if not claude.get_claude_config_path():
         sys.exit(1)
 
-    from mcp_naver.server import mcp
+    from mcp_tour.server import mcp
 
     name = mcp.name
     server = mcp
