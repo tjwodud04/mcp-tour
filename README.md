@@ -1,9 +1,12 @@
 > MCP integration for Korea Tourism Organization’s API using Claude Desktop App with help from Cursor.
 
-![image](https://github.com/user-attachments/assets/78a12e75-f1bc-4e8f-bd23-c2b699b1357f)
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/a5cd8ee6-e05a-4fdb-96bc-ceaffaca1a2e" width="500" style="margin-right: 300px;" />
+  <img src="https://github.com/user-attachments/assets/f84e9c7c-89a4-4799-a568-9e942630ef1a" width="500" />
+</div>
 
 ## Description
-
 This MCP server integrates the Korea Tourism Organization’s public data API to provide related tourist spots information. It is designed to be used with Claude Desktop via the Model Context Protocol (MCP).
 
 ## Features
