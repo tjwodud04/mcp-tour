@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mcp-tour"
-version = "0.1.8"
+version = "0.1.11"
 description = "MCP server providing Korea Tourism Organization APIs"
 readme = "README.md"
 requires-python = ">=3.10"

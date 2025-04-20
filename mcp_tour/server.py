@@ -11,10 +11,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 import json
 import httpx
-import certifi
+import ssl
 from fastmcp import FastMCP
 from typing import Optional
-from httpx import HTTPTransport
 
 # Load environment variables from .env file
 load_dotenv()
@@ -25,8 +24,7 @@ mcp = FastMCP(
     dependencies=[
         "httpx",
         "python-dotenv",
-        "pydantic",
-        "certifi"
+        "pydantic"
     ]
 )
 
@@ -37,8 +35,9 @@ if not TOUR_API_KEY:
 API_ENDPOINT = "https://apis.data.go.kr/B551011/TarRlteTarService"
 STANDARD_TOUR_API_ENDPOINT = "https://api.data.go.kr/openapi/tn_pubr_public_trrsrt_api"
 
-# Transport configuration with proper SSL verification
-transport = HTTPTransport(verify=certifi.where())
+# Configure SSL context
+ssl_context = ssl.create_default_context()
+ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')
 
 @mcp.tool(
     name="get_area_based_list",
@@ -65,7 +64,7 @@ async def get_area_based_list(
     Raises:
         Exception: If API request fails
     """
-    async with httpx.AsyncClient(transport=transport) as client:
+    async with httpx.AsyncClient(verify=ssl_context) as client:
         try:
             # Get current year and month for baseYm parameter
             base_ym = datetime.now().strftime("%Y%m")
@@ -123,7 +122,7 @@ async def search_by_keyword(
     Raises:
         Exception: If API request fails
     """
-    async with httpx.AsyncClient(transport=transport) as client:
+    async with httpx.AsyncClient(verify=ssl_context) as client:
         try:
             # Get current year and month for baseYm parameter
             base_ym = datetime.now().strftime("%Y%m")
@@ -180,7 +179,7 @@ async def get_standard_tour_list(
     Raises:
         Exception: If API request fails
     """
-    async with httpx.AsyncClient(transport=transport) as client:
+    async with httpx.AsyncClient(verify=ssl_context) as client:
         try:
             params = {
                 "serviceKey": TOUR_API_KEY,
