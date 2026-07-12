@@ -1,43 +1,20 @@
-"""
-Korea Tourism Organization API integration for Claude using MCP protocol.
+"""MCP server exposing Korea Tourism Organization APIs as Claude tools.
 
-This module provides tools to access Korea Tourism Organization's tourism data API
-through the MCP (Model Control Protocol) interface.
+This module wires up the :class:`~fastmcp.FastMCP` server and registers the tool
+functions that an MCP host (such as Claude Desktop) can call. HTTP and
+configuration concerns live in :mod:`mcp_tour.client` and :mod:`mcp_tour.config`.
 """
 
-import os
-import sys
-from datetime import datetime
-from dotenv import load_dotenv
-import json
-import httpx
-import ssl
-from fastmcp import FastMCP
 from typing import Optional
 
-# Load environment variables from .env file
-load_dotenv()
+from fastmcp import FastMCP
 
-mcp = FastMCP(
-    "Korea Tourism API",
-    description="Access Korea Tourism Organization's tourism data API",
-    dependencies=[
-        "httpx",
-        "python-dotenv",
-        "pydantic"
-    ]
-)
+from mcp_tour import config
+from mcp_tour.client import TourApiClient
 
-TOUR_API_KEY = os.environ.get("TOUR_API_KEY")
-if not TOUR_API_KEY:
-    raise ValueError("TOUR_API_KEY environment variable is not set")
-    
-API_ENDPOINT = "https://apis.data.go.kr/B551011/TarRlteTarService"
-STANDARD_TOUR_API_ENDPOINT = "https://api.data.go.kr/openapi/tn_pubr_public_trrsrt_api"
+mcp = FastMCP(config.SERVER_NAME, instructions=config.SERVER_INSTRUCTIONS)
+_client = TourApiClient(service_key=config.get_api_key())
 
-# Configure SSL context
-ssl_context = ssl.create_default_context()
-ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')
 
 @mcp.tool(
     name="get_area_based_list",
@@ -47,53 +24,29 @@ async def get_area_based_list(
     area_code: str,
     signgu_code: str,
     content_type_id: Optional[str] = None,
-    size: int = 50,
+    size: int = config.DEFAULT_AREA_BASED_SIZE,
 ) -> str:
-    """
-    Get area-based tourist spots information from Korea Tourism Organization API.
-    
+    """Get area-based tourist spots information from Korea Tourism Organization API.
+
     Args:
         area_code (str): Area code for the region
         signgu_code (str): Signgu (city/district) code
         content_type_id (str, optional): Content type ID (12: Tourist Spots, 39: Restaurants, 32: Accommodation)
         size (int): Number of results to return (max 50)
-        
+
     Returns:
         str: JSON response containing tourist spot information
-        
+
     Raises:
         Exception: If API request fails
     """
-    async with httpx.AsyncClient(verify=ssl_context) as client:
-        try:
-            # Get current year and month for baseYm parameter
-            base_ym = datetime.now().strftime("%Y%m")
-            
-            params = {
-                "serviceKey": TOUR_API_KEY,
-                "numOfRows": min(size, 50),
-                "pageNo": 1,
-                "MobileOS": "ETC",
-                "MobileApp": "mcp-tour",
-                "baseYm": base_ym,
-                "areaCd": area_code,
-                "signguCd": signgu_code,
-                "_type": "json"
-            }
-            if content_type_id:
-                params["contentTypeId"] = content_type_id
+    return await _client.area_based_list(
+        area_code=area_code,
+        signgu_code=signgu_code,
+        content_type_id=content_type_id,
+        size=size,
+    )
 
-            response = await client.get(
-                f"{API_ENDPOINT}/areaBasedList",
-                params=params,
-                timeout=30.0
-            )
-            
-            response.raise_for_status()
-            return response.text
-        except Exception as e:
-            print(f"Error in get_area_based_list: {str(e)}", file=sys.stderr)
-            raise
 
 @mcp.tool(
     name="search_by_keyword",
@@ -104,106 +57,68 @@ async def search_by_keyword(
     area_code: str,
     signgu_code: str,
     content_type_id: Optional[str] = None,
-    size: int = 50,
+    size: int = config.DEFAULT_AREA_BASED_SIZE,
 ) -> str:
-    """
-    Search tourist spots by keyword from Korea Tourism Organization API.
-    
+    """Search tourist spots by keyword from Korea Tourism Organization API.
+
     Args:
         keyword (str): Search keyword
         area_code (str): Area code for the region
         signgu_code (str): Signgu (city/district) code
         content_type_id (str, optional): Content type ID (12: Tourist Spots, 39: Restaurants, 32: Accommodation)
         size (int): Number of results to return (max 50)
-        
+
     Returns:
         str: JSON response containing search results
-        
+
     Raises:
         Exception: If API request fails
     """
-    async with httpx.AsyncClient(verify=ssl_context) as client:
-        try:
-            # Get current year and month for baseYm parameter
-            base_ym = datetime.now().strftime("%Y%m")
-            
-            params = {
-                "serviceKey": TOUR_API_KEY,
-                "numOfRows": min(size, 50),
-                "pageNo": 1,
-                "MobileOS": "ETC",
-                "MobileApp": "mcp-tour",
-                "baseYm": base_ym,
-                "areaCd": area_code,
-                "signguCd": signgu_code,
-                "keyword": keyword,
-                "_type": "json"
-            }
-            if content_type_id:
-                params["contentTypeId"] = content_type_id
+    return await _client.search_by_keyword(
+        keyword=keyword,
+        area_code=area_code,
+        signgu_code=signgu_code,
+        content_type_id=content_type_id,
+        size=size,
+    )
 
-            response = await client.get(
-                f"{API_ENDPOINT}/searchKeyword",
-                params=params,
-                timeout=30.0
-            )
-            
-            response.raise_for_status()
-            return response.text
-        except Exception as e:
-            print(f"Error in search_by_keyword: {str(e)}", file=sys.stderr)
-            raise
 
 @mcp.tool(
     name="get_standard_tour_list",
     description="Get tourist spots information from the National Standard Tourism Data API",
 )
 async def get_standard_tour_list(
-    page_no: int = 1,
-    num_of_rows: int = 100,
+    page_no: int = config.DEFAULT_STANDARD_PAGE_NO,
+    num_of_rows: int = config.DEFAULT_STANDARD_ROWS,
     tourist_spot_name: Optional[str] = None,
     address: Optional[str] = None,
 ) -> str:
-    """
-    Get tourist spots information from the National Standard Tourism Data API.
-    
+    """Get tourist spots information from the National Standard Tourism Data API.
+
     Args:
         page_no (int): Page number (default: 1)
         num_of_rows (int): Number of rows per page (default: 100)
         tourist_spot_name (str, optional): Name of the tourist spot to search for
         address (str, optional): Address to search for
-        
+
     Returns:
         str: JSON response containing tourist spot information
-        
+
     Raises:
         Exception: If API request fails
     """
-    async with httpx.AsyncClient(verify=ssl_context) as client:
-        try:
-            params = {
-                "serviceKey": TOUR_API_KEY,
-                "pageNo": page_no,
-                "numOfRows": num_of_rows,
-                "type": "json"
-            }
-            
-            if tourist_spot_name:
-                params["trrsrtNm"] = tourist_spot_name
-            if address:
-                params["rdnmadr"] = address
+    return await _client.standard_tour_list(
+        page_no=page_no,
+        num_of_rows=num_of_rows,
+        tourist_spot_name=tourist_spot_name,
+        address=address,
+    )
 
-            response = await client.get(
-                STANDARD_TOUR_API_ENDPOINT,
-                params=params,
-                timeout=30.0
-            )
-            
-            response.raise_for_status()
-            return response.text
-        except Exception as e:
-            print(f"Error in get_standard_tour_list: {str(e)}", file=sys.stderr)
-            raise
+
+def main() -> None:
+    """Run the MCP server over stdio (the transport Claude Desktop expects)."""
+    mcp.run()
+
 
 if __name__ == "__main__":
-    mcp.run()
+    main()
