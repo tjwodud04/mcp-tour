@@ -8,17 +8,37 @@ version = "0.1.11"
 description = "MCP server providing Korea Tourism Organization APIs"
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = [
-    "fastmcp>=0.4.1",
-    "httpx>=0.28.1",
-    "pydantic>=2.10.6",
-    "python-dotenv>=1.0.0",
-    "certifi>=2024.2.2"
-]
 authors = [{ name = "tjwodud04", email = "tjwodud04@gmail.com" }]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "fastmcp",
+    "korea",
+    "tourism",
+    "tourapi",
+    "claude",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "fastmcp>=3.2,<4",
+    "httpx>=0.28",
+    "python-dotenv>=1.0",
+]
 
 [project.urls]
+Homepage = "https://github.com/tjwodud04/mcp-tour"
 Repository = "https://github.com/tjwodud04/mcp-tour.git"
+Issues = "https://github.com/tjwodud04/mcp-tour/issues"
 
 [project.scripts]
 mcp-tour-claude = "mcp_tour.hosts.claude_desktop:install_to_claude_desktop"
