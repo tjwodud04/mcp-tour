@@ -24,11 +24,10 @@ We use two main data sources:
 
 ## Setup
 
-1. Get API keys from [Data.go.kr](https://www.data.go.kr)
-2. Set environment variables in `.env` file:
+1. Get an API key from [Data.go.kr](https://www.data.go.kr)
+2. Set the environment variable in a `.env` file:
    ```
    TOUR_API_KEY=your-api-key
-   STANDARD_TOUR_API_KEY=your-standard-api-key
    ```
 
 ## Installation
@@ -46,12 +45,10 @@ uv pip install mcp-tour
 
 # Method 1: Using environment variables directly
 uv run python -m mcp_tour.hosts.claude_desktop \
-  -e TOUR_API_KEY=your-api-key \
-  -e STANDARD_TOUR_API_KEY=your-standard-api-key
+  -e TOUR_API_KEY=your-api-key
 
 # Method 2: Using .env file
 echo "TOUR_API_KEY=your-api-key" > .env
-echo "STANDARD_TOUR_API_KEY=your-standard-api-key" >> .env
 uv run python -m mcp_tour.hosts.claude_desktop
 ```
 
@@ -61,32 +58,35 @@ pip install mcp-tour
 
 # Method 1: Using environment variables directly
 python -m mcp_tour.hosts.claude_desktop \
-  -e TOUR_API_KEY=your-api-key \
-  -e STANDARD_TOUR_API_KEY=your-standard-api-key
+  -e TOUR_API_KEY=your-api-key
 
 # Method 2: Using .env file
 echo "TOUR_API_KEY=your-api-key" > .env
-echo "STANDARD_TOUR_API_KEY=your-standard-api-key" >> .env
 python -m mcp_tour.hosts.claude_desktop
 ```
 
 ## Usage
 
-### get_related_spots
+### get_area_based_list
 
-Fetch related tourist spots:
+Fetch related tourist spots for a region:
 
 **Parameters**
-- `spot_id`: Tourist spot ID
-- `content_type`: one of `all`, `tourist`, `food`, or `accommodation`
+- `area_code`: Area code for the region
+- `signgu_code`: Signgu (city/district) code
+- `content_type_id`: Optional content type ID (`12`: tourist spots, `39`: restaurants, `32`: accommodation)
 - `size`: Number of results (up to 50)
 
-### get_spot_info
+### search_by_keyword
 
-Fetch detailed information about a tourist spot:
+Search related tourist spots by keyword:
 
 **Parameters**
-- `spot_id`: Tourist spot ID
+- `keyword`: Search keyword
+- `area_code`: Area code for the region
+- `signgu_code`: Signgu (city/district) code
+- `content_type_id`: Optional content type ID (`12`: tourist spots, `39`: restaurants, `32`: accommodation)
+- `size`: Number of results (up to 50)
 
 ### get_standard_tour_list
 
